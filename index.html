@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Book Library</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="bookform">
+      <form id="mainform" >
+        <input type="text" id="formtitle" name="title" required placeholder="Title"><br>
+        <input type="text" id="formauthor" name="author" required placeholder="Author"><br>
+        <input type="number" id="formpages" name="pages" required placeholder="Pages"><br>
+        <label>Already read the book?</label>
+        <input type="checkbox" id="formread" name="read"><br>
+        <button type="submit" id="submit" onclick="SubmitFunction() ;return false">Submit</button>
+      </form>
+    </div>
+    <table id="bookdisplay">
+      <thead>
+        <tr class="tableheaders">
+        <th>Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Read</th>
+        
+      </tr>
+      </thead>
+      <tbody id="tabody">
+      
+        </tbody>
+    </table>
+  </div>
+
+
+
+</body>
+
+</html>
