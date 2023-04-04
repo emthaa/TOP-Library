@@ -1,125 +1,119 @@
-let bookdisplay = document.getElementById("bookdisplay")
-let tabody = document.getElementById("tabody")
-let mainform = document.getElementById("mainform")
-let submit = document.getElementById("submit")
-
-
-function changeBoolStatement(varr){
-  return varr ? "Read" : "Not Read";
-}
-
-
-function SubmitFunction(){
-  let formtitle = document.getElementById("formtitle").value
-  let formauthor = document.getElementById("formauthor").value
-  let formpages = document.getElementById("formpages").value
-  let formread = document.getElementById("formread").checked
-  let HasRead = changeBoolStatement(formread)
-  
-  if (formtitle == "" ||  formauthor == "" || formpages == ""){
-    return
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
   }
   
-  console.log(formtitle,formauthor,formpages,HasRead);
-  MyLibraryPlaceHolder = myLibrary;
-  myLibrary = [];
-
-  let BookSubmit = new Book(formtitle,formauthor,formpages,HasRead);
-  addBookToLibrary(BookSubmit);
-  displayBooks(myLibrary);
-
-  mainform.reset();
+  changeReadStatus() {
+    this.read = !this.read;
+  }
 }
 
-function Book(title,author,pages,read) {
-  
-  this.title = title
-  this.author = author
-  this.pages = pages
-  this.read = read
-  
-}
-
-function addBookToLibrary(book) {
-  
-  return myLibrary.push(book);
-  
-}
-
-function GetRid(){
-  
-  this.parentElement.parentElement.remove()
-  
-}
-
-function ChangeStatus(){
-  
-  if (this.parentElement.parentElement.querySelector('.Read').textContent == "Read"){
+class Library {
+  constructor() {
+    let bookEx = new Book('some title','some author','555','Not Read')
+    this.books = [bookEx];
     
-      this.parentElement.parentElement.querySelector('.Read').textContent = "Not Read";
+    this.bookDisplay = document.getElementById("bookdisplay");
+    this.tableBody = document.getElementById("tabody");
+    this.mainForm = document.getElementById("mainform");
+    this.submitButton = document.getElementById("submit");
+    this.submitButton.addEventListener("click", this.submitBook.bind(this));
+    this.displayBooks();
     
-    } else {
-    
-      this.parentElement.parentElement.querySelector('.Read').textContent = "Read"
-    
+  }
+  
+  changeBoolStatement(varr) {
+    return varr ? "Read" : "Not Read";
+  }
+  
+  submitBook() {
+    const formTitle = document.getElementById("formtitle").value;
+    const formAuthor = document.getElementById("formauthor").value;
+    const formPages = document.getElementById("formpages").value;
+    const formRead = document.getElementById("formread").checked;
+    const hasRead = this.changeBoolStatement(formRead);
+  
+    if (formTitle == "" || formAuthor == "" || formPages == "") {
+      return;
     }
-}
-
-function displayBooks(arr){
-  for(let i = 0; i < arr.length; i++){
-    newBook = document.createElement("tr");
+  
+    const bookSubmit = new Book(formTitle, formAuthor, formPages, hasRead);
+    this.addBookToLibrary(bookSubmit);
+    this.displayBooks();
+    this.mainForm.reset();
+  }
+  
+  addBookToLibrary(book) {
+    this.books.push(book);
+  }
+  
+  getRid(element) {
+    element.parentElement.parentElement.remove();
+  }
+  
+  changeStatus(element) {
+    const readElement = element.parentElement.parentElement.querySelector('.Read');
     
-    newBook.className = "book";
+    if (readElement.textContent === "Read") {
+      readElement.textContent = "Not Read";
+    } else {
+      readElement.textContent = "Read";
+    }
+  }
+  
+  displayBooks() {
+    this.tableBody.innerHTML = "";
     
-    bookdisplay.appendChild(newBook)
-    
-    Title = document.createElement("td");
-    Author = document.createElement("td");
-    Pages = document.createElement("td");
-    Read = document.createElement("td");
-    Buttons = document.createElement("td");
-    EditReadStatus = document.createElement("button")
-    Delete = document.createElement("button");
-
-    Title.className = "Title";
-    Author.className = "Author";
-    Pages.className = "Pages";
-    Read.className = "Read";
-    Buttons.className = "Buttons"
-    EditReadStatus.className = "EditReadStatus";
-    Delete.className = "Delete";
-
-    
-    Title.textContent = arr[i].title
-    Author.textContent = arr[i].author
-    Pages.textContent = arr[i].pages
-    Read.textContent = arr[i].read
-    EditReadStatus.textContent = "Change Read Status"
-    Delete.textContent = "Delete"
-
-    Delete.addEventListener("click" , GetRid)
-    EditReadStatus.addEventListener("click", ChangeStatus)
-    
-    newBook.appendChild(Title)
-    newBook.appendChild(Author)
-    newBook.appendChild(Pages)
-    newBook.appendChild(Read)
-    newBook.appendChild(Buttons)
-    Buttons.appendChild(EditReadStatus)
-    Buttons.appendChild(Delete)
-    tabody.appendChild(newBook)
-    
+    for (let i = 0; i < this.books.length; i++) {
+      const book = this.books[i];
+      
+      const newBook = document.createElement("tr");
+      newBook.className = "book";
+      
+      const title = document.createElement("td");
+      title.className = "Title";
+      title.textContent = book.title;
+      newBook.appendChild(title);
+      
+      const author = document.createElement("td");
+      author.className = "Author";
+      author.textContent = book.author;
+      newBook.appendChild(author);
+      
+      const pages = document.createElement("td");
+      pages.className = "Pages";
+      pages.textContent = book.pages;
+      newBook.appendChild(pages);
+      
+      const read = document.createElement("td");
+      read.className = "Read";
+      read.textContent = book.read;
+      newBook.appendChild(read);
+      
+      const buttons = document.createElement("td");
+      buttons.className = "Buttons";
+      newBook.appendChild(buttons);
+      
+      const editReadStatus = document.createElement("button");
+      editReadStatus.className = "EditReadStatus";
+      editReadStatus.textContent = "Change Read Status";
+      editReadStatus.addEventListener("click", this.changeStatus.bind(this, editReadStatus));
+      buttons.appendChild(editReadStatus);
+      
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "Delete";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", this.getRid.bind(this, deleteButton));
+      buttons.appendChild(deleteButton);
+      
+      this.tableBody.appendChild(newBook);
+    }
   }
 }
 
-
-testBook = new Book("The Hobbit","J.R.R. Tolkien","300","Not Read")
-testBook2 = new Book("title","author","pages","Read")
-
-let myLibrary = [testBook];
-
-displayBooks(myLibrary)
-
-
+const library = new Library();
 
 //start with table new book = new tr each new info = td
